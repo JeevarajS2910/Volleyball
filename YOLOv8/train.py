@@ -93,6 +93,29 @@ def validate_paths(logger):
     return ok
 
 
+def update_data_yaml(data_yaml_path, dataset_dir, logger):
+    """Update data.yaml with absolute path to dataset directory."""
+    try:
+        with open(data_yaml_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        
+        # Update the path line with absolute dataset directory
+        updated_lines = []
+        for line in lines:
+            if line.strip().startswith('path:'):
+                updated_lines.append(f'path: {dataset_dir}\n')
+            else:
+                updated_lines.append(line)
+        
+        with open(data_yaml_path, 'w', encoding='utf-8') as f:
+            f.writelines(updated_lines)
+        
+        logger.info(f"✅ Updated data.yaml with path: {dataset_dir}")
+    except Exception as e:
+        logger.warning(f"⚠️ Could not update data.yaml: {e}")
+
+
+
 def train(logger):
     """Run the full training pipeline."""
     # ── GPU ──
@@ -114,6 +137,10 @@ def train(logger):
     logger.info(f"  Patience   : {PATIENCE}")
     logger.info(f"  Output     : {PROJECT_DIR}/{RUN_NAME}")
     logger.info("=" * 60)
+
+    # ── Update data.yaml with absolute path ──
+    dataset_dir = os.path.dirname(DATA_YAML)
+    update_data_yaml(DATA_YAML, dataset_dir, logger)
 
     # ── Load model ──
     logger.info("Loading model …")
