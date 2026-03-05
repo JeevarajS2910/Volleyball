@@ -23,20 +23,23 @@ from ultralytics import YOLO
 
 
 # ────────────────────────── CONFIGURATION ──────────────────────────
-BASE_DIR        = r"C:\volley ball"
-SCRIPT_DIR      = os.path.join(BASE_DIR, "YOLOv8")
-MODEL_PATH      = os.path.join(BASE_DIR, "yolo26n.pt")
-DATA_YAML       = os.path.join(BASE_DIR, "dataset", "data.yaml")
+# Detect project root dynamically (parent of YOLOv8 directory)
+CURRENT_FILE_PATH = os.path.abspath(__file__)
+SCRIPT_DIR        = os.path.dirname(CURRENT_FILE_PATH)
+BASE_DIR          = os.path.dirname(SCRIPT_DIR)
 
-EPOCHS          = 100
-IMG_SIZE        = 640
-BATCH_SIZE      = 4          # safe for RTX 3050 4 GB VRAM
-PATIENCE        = 50         # early-stopping patience
-SAVE_PERIOD     = 10         # checkpoint every N epochs
+MODEL_PATH        = os.path.join(BASE_DIR, "yolo26n.pt")
+DATA_YAML         = os.path.join(BASE_DIR, "dataset", "data.yaml")
 
-PROJECT_DIR     = os.path.join(SCRIPT_DIR, "runs")
-RUN_NAME        = "volleyball_train"
-LOG_DIR         = os.path.join(SCRIPT_DIR, "logs")
+EPOCHS            = 100
+IMG_SIZE          = 640
+BATCH_SIZE        = 4          # safe for RTX 3050 4 GB VRAM
+PATIENCE          = 50         # early-stopping patience
+SAVE_PERIOD       = 10         # checkpoint every N epochs
+
+PROJECT_DIR       = os.path.join(SCRIPT_DIR, "runs")
+RUN_NAME          = "volleyball_train"
+LOG_DIR           = os.path.join(SCRIPT_DIR, "logs")
 # ───────────────────────────────────────────────────────────────────
 
 
