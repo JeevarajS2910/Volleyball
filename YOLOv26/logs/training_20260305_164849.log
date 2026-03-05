@@ -1,0 +1,19 @@
+2026-03-05 16:48:49 | Log file → /teamspace/studios/this_studio/Volleyball/YOLOv26/logs/training_20260305_164849.log
+2026-03-05 16:48:49 | ✅ GPU detected: Tesla T4  (14.7 GB VRAM)
+2026-03-05 16:48:49 | ✅ Dataset config found: /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:48:49 | ✅ Model found locally: /teamspace/studios/this_studio/Volleyball/yolo26n.pt
+2026-03-05 16:48:49 | ============================================================
+2026-03-05 16:48:49 |   YOLO Volleyball Detection — GPU Training
+2026-03-05 16:48:49 | ============================================================
+2026-03-05 16:48:49 |   Model      : /teamspace/studios/this_studio/Volleyball/yolo26n.pt
+2026-03-05 16:48:49 |   Dataset    : /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:48:49 |   Epochs     : 100
+2026-03-05 16:48:49 |   Image size : 640
+2026-03-05 16:48:49 |   Batch size : 4
+2026-03-05 16:48:49 |   Patience   : 50
+2026-03-05 16:48:49 |   Output     : /teamspace/studios/this_studio/Volleyball/YOLOv26/runs/volleyball_train
+2026-03-05 16:48:49 | ============================================================
+2026-03-05 16:48:49 | ✅ Updated data.yaml with path: /teamspace/studios/this_studio/Volleyball/dataset
+2026-03-05 16:48:49 | Loading model …
+2026-03-05 16:48:49 | Starting training …
+

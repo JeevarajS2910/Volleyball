@@ -1,0 +1,36 @@
+2026-03-05 16:27:39 | Log file → /teamspace/studios/this_studio/Volleyball/YOLOv7/logs/training_20260305_162739.log
+2026-03-05 16:27:39 | ✅ GPU detected: Tesla T4  (14.7 GB VRAM)
+2026-03-05 16:27:39 | ✅ Dataset config found: /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:27:39 | ℹ️ Using model: yolov7n (auto-download if needed)
+2026-03-05 16:27:39 | ============================================================
+2026-03-05 16:27:39 |   YOLO Volleyball Detection — GPU Training
+2026-03-05 16:27:39 | ============================================================
+2026-03-05 16:27:39 |   Model      : yolov7n
+2026-03-05 16:27:39 |   Dataset    : /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:27:39 |   Epochs     : 100
+2026-03-05 16:27:39 |   Image size : 640
+2026-03-05 16:27:39 |   Batch size : 4
+2026-03-05 16:27:39 |   Patience   : 50
+2026-03-05 16:27:39 |   Output     : /teamspace/studios/this_studio/Volleyball/YOLOv7/runs/volleyball_train
+2026-03-05 16:27:39 | ============================================================
+2026-03-05 16:27:39 | ✅ Updated data.yaml with path: /teamspace/studios/this_studio/Volleyball/dataset
+2026-03-05 16:27:39 | Loading model …
+2026-03-05 16:27:39 | Training failed: 'yolov7n' does not exist
+Traceback (most recent call last):
+  File "/teamspace/studios/this_studio/Volleyball/YOLOv7/train.py", line 224, in <module>
+    train(logger)
+  File "/teamspace/studios/this_studio/Volleyball/YOLOv7/train.py", line 150, in train
+    model = YOLO(MODEL_PATH)
+            ^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/models/yolo/model.py", line 76, in __init__
+    super().__init__(model=model, task=task, verbose=verbose)
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/engine/model.py", line 144, in __init__
+    self._load(model, task=task)
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/engine/model.py", line 288, in _load
+    weights = checks.check_file(weights)  # runs in all cases, not redundant with above call
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/utils/checks.py", line 678, in check_file
+    raise FileNotFoundError(f"'{file}' does not exist")
+FileNotFoundError: 'yolov7n' does not exist
+2026-03-05 16:27:39 | 
+📝 Full training log saved to: /teamspace/studios/this_studio/Volleyball/YOLOv7/logs/training_20260305_162739.log

@@ -1,0 +1,49 @@
+2026-03-05 16:29:20 | Log file → /teamspace/studios/this_studio/Volleyball/YOLOv7/logs/training_20260305_162920.log
+2026-03-05 16:29:20 | ✅ GPU detected: Tesla T4  (14.7 GB VRAM)
+2026-03-05 16:29:20 | ✅ Dataset config found: /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:29:20 | ℹ️ Model: yolov8n (YOLOv8 - YOLOv7 is deprecated, will auto-download)
+2026-03-05 16:29:20 | ============================================================
+2026-03-05 16:29:20 |   YOLO Volleyball Detection — GPU Training
+2026-03-05 16:29:20 | ============================================================
+2026-03-05 16:29:20 |   Model      : yolov8n
+2026-03-05 16:29:20 |   Dataset    : /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:29:20 |   Epochs     : 100
+2026-03-05 16:29:20 |   Image size : 640
+2026-03-05 16:29:20 |   Batch size : 4
+2026-03-05 16:29:20 |   Patience   : 50
+2026-03-05 16:29:20 |   Output     : /teamspace/studios/this_studio/Volleyball/YOLOv7/runs/volleyball_train
+2026-03-05 16:29:20 | ============================================================
+2026-03-05 16:29:20 | ✅ Updated data.yaml with path: /teamspace/studios/this_studio/Volleyball/dataset
+2026-03-05 16:29:20 | Loading model …
+2026-03-05 16:29:20 | Starting training …
+
+2026-03-05 17:57:40 | 
+============================================================
+2026-03-05 17:57:40 |   TRAINING COMPLETE — FINAL METRICS
+2026-03-05 17:57:40 | ============================================================
+2026-03-05 17:57:40 | 
+Metric                                   Value
+2026-03-05 17:57:40 | -----------------------------------------------
+2026-03-05 17:57:40 | metrics/precision(B)                    0.8012
+2026-03-05 17:57:40 | metrics/recall(B)                       0.7741
+2026-03-05 17:57:40 | metrics/mAP50(B)                        0.8001
+2026-03-05 17:57:40 | metrics/mAP50-95(B)                     0.6137
+2026-03-05 17:57:40 | fitness                                 0.6137
+2026-03-05 17:57:40 | 
+📁 Results saved to : /teamspace/studios/this_studio/Volleyball/YOLOv7/runs/volleyball_train
+2026-03-05 17:57:40 | 📊 Auto-saved charts:
+2026-03-05 17:57:40 |    ✅ results.png
+2026-03-05 17:57:40 |    ✅ confusion_matrix.png
+2026-03-05 17:57:40 |    ✅ confusion_matrix_normalized.png
+2026-03-05 17:57:40 |    — F1_curve.png
+2026-03-05 17:57:40 |    — P_curve.png
+2026-03-05 17:57:40 |    — R_curve.png
+2026-03-05 17:57:40 |    — PR_curve.png
+2026-03-05 17:57:40 |    ✅ labels.jpg
+2026-03-05 17:57:40 |    — labels_correlogram.jpg
+2026-03-05 17:57:40 | 
+🏆 Best weights : /teamspace/studios/this_studio/Volleyball/YOLOv7/runs/volleyball_train/weights/best.pt
+2026-03-05 17:57:40 |    Last weights : /teamspace/studios/this_studio/Volleyball/YOLOv7/runs/volleyball_train/weights/last.pt
+2026-03-05 17:57:40 | ============================================================
+2026-03-05 17:57:40 | 
+📝 Full training log saved to: /teamspace/studios/this_studio/Volleyball/YOLOv7/logs/training_20260305_162920.log

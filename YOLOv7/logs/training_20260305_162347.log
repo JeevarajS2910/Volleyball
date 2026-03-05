@@ -1,0 +1,52 @@
+2026-03-05 16:23:47 | Log file → /teamspace/studios/this_studio/Volleyball/YOLOv7/logs/training_20260305_162347.log
+2026-03-05 16:23:47 | ✅ GPU detected: Tesla T4  (14.7 GB VRAM)
+2026-03-05 16:23:47 | ✅ Dataset config found: /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:23:47 | ⚠️ Model not found locally, will be auto-downloaded: /teamspace/studios/this_studio/Volleyball/yolo7n.pt
+2026-03-05 16:23:47 | ============================================================
+2026-03-05 16:23:47 |   YOLO Volleyball Detection — GPU Training
+2026-03-05 16:23:47 | ============================================================
+2026-03-05 16:23:47 |   Model      : /teamspace/studios/this_studio/Volleyball/yolo7n.pt
+2026-03-05 16:23:47 |   Dataset    : /teamspace/studios/this_studio/Volleyball/dataset/data.yaml
+2026-03-05 16:23:47 |   Epochs     : 100
+2026-03-05 16:23:47 |   Image size : 640
+2026-03-05 16:23:47 |   Batch size : 4
+2026-03-05 16:23:47 |   Patience   : 50
+2026-03-05 16:23:47 |   Output     : /teamspace/studios/this_studio/Volleyball/YOLOv7/runs/volleyball_train
+2026-03-05 16:23:47 | ============================================================
+2026-03-05 16:23:47 | ✅ Updated data.yaml with path: /teamspace/studios/this_studio/Volleyball/dataset
+2026-03-05 16:23:47 | Loading model …
+2026-03-05 16:23:48 | Training failed: [Errno 2] No such file or directory: '/teamspace/studios/this_studio/Volleyball/yolo7n.pt'
+Traceback (most recent call last):
+  File "/teamspace/studios/this_studio/Volleyball/YOLOv7/train.py", line 227, in <module>
+    train(logger)
+  File "/teamspace/studios/this_studio/Volleyball/YOLOv7/train.py", line 153, in train
+    model = YOLO(MODEL_PATH)
+            ^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/models/yolo/model.py", line 76, in __init__
+    super().__init__(model=model, task=task, verbose=verbose)
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/engine/model.py", line 144, in __init__
+    self._load(model, task=task)
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/engine/model.py", line 283, in _load
+    self.model, self.ckpt = load_checkpoint(weights)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/nn/tasks.py", line 1515, in load_checkpoint
+    ckpt, weight = torch_safe_load(weight)  # load ckpt
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/nn/tasks.py", line 1463, in torch_safe_load
+    ckpt = torch_load(file, map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/ultralytics/utils/patches.py", line 178, in torch_load
+    return torch.load(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/torch/serialization.py", line 1319, in load
+    with _open_file_like(f, "rb") as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/torch/serialization.py", line 659, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/torch/serialization.py", line 640, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/teamspace/studios/this_studio/Volleyball/yolo7n.pt'
+2026-03-05 16:23:48 | 
+📝 Full training log saved to: /teamspace/studios/this_studio/Volleyball/YOLOv7/logs/training_20260305_162347.log
