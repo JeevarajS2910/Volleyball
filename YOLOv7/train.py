@@ -28,7 +28,7 @@ CURRENT_FILE_PATH = os.path.abspath(__file__)
 SCRIPT_DIR        = os.path.dirname(CURRENT_FILE_PATH)
 BASE_DIR          = os.path.dirname(SCRIPT_DIR)
 
-MODEL_PATH        = os.path.join(BASE_DIR, "yolo7n.pt")
+MODEL_PATH        = "yolov7n"  # ultralytics will auto-download
 DATA_YAML         = os.path.join(BASE_DIR, "dataset", "data.yaml")
 
 EPOCHS            = 100
@@ -90,11 +90,8 @@ def validate_paths(logger):
     else:
         logger.info(f"✅ Dataset config found: {DATA_YAML}")
     
-    # Model will be auto-downloaded by ultralytics if not found
-    if os.path.isfile(MODEL_PATH):
-        logger.info(f"✅ Model found locally: {MODEL_PATH}")
-    else:
-        logger.info(f"⚠️ Model not found locally, will be auto-downloaded: {MODEL_PATH}")
+    # Model will be auto-downloaded by ultralytics
+    logger.info(f"ℹ️ Using model: {MODEL_PATH} (auto-download if needed)")
     
     return ok
 
