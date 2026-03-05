@@ -1,0 +1,1 @@
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; .\venv_gpu\Scripts\Activate.ps1
