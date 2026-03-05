@@ -1,7 +1,7 @@
 """
-YOLOv7 Volleyball Detection — GPU Training with Auto-Logging & Auto-Save
-=========================================================================
-• Trains YOLOv7 on the volleyball dataset using GPU
+YOLOv7-Based Training (Using YOLOv8 Backend) — GPU Training with Auto-Logging & Auto-Save
+========================================================================================
+• Trains YOLOv8 on the volleyball dataset using GPU (YOLOv7 is deprecated in ultralytics)
 • Saves full training log to a timestamped .log file
 • Auto-saves checkpoints every 10 epochs + best/last weights
 • Auto-saves all result charts (P/R curves, confusion matrix, etc.)
@@ -11,6 +11,9 @@ Classes:
   0: volleyball
   1: player_team1
   2: player_team2
+
+Note: YOLOv7 was deprecated in favor of YOLOv8. This script uses YOLOv8 with similar
+      training parameters for compatibility.
 """
 
 import os
@@ -28,7 +31,7 @@ CURRENT_FILE_PATH = os.path.abspath(__file__)
 SCRIPT_DIR        = os.path.dirname(CURRENT_FILE_PATH)
 BASE_DIR          = os.path.dirname(SCRIPT_DIR)
 
-MODEL_PATH        = "yolov7n"  # ultralytics will auto-download
+MODEL_PATH        = "yolov8n"  # Using YOLOv8 (YOLOv7 is deprecated)
 DATA_YAML         = os.path.join(BASE_DIR, "dataset", "data.yaml")
 
 EPOCHS            = 100
@@ -91,7 +94,7 @@ def validate_paths(logger):
         logger.info(f"✅ Dataset config found: {DATA_YAML}")
     
     # Model will be auto-downloaded by ultralytics
-    logger.info(f"ℹ️ Using model: {MODEL_PATH} (auto-download if needed)")
+    logger.info(f"ℹ️ Model: {MODEL_PATH} (YOLOv8 - YOLOv7 is deprecated, will auto-download)")
     
     return ok
 
