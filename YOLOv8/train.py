@@ -70,7 +70,7 @@ def check_gpu(logger):
     """Detect GPU and return device id."""
     if torch.cuda.is_available():
         name = torch.cuda.get_device_name(0)
-        mem  = torch.cuda.get_device_properties(0).total_mem / (1024 ** 3)
+        mem  = torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)
         logger.info(f"✅ GPU detected: {name}  ({mem:.1f} GB VRAM)")
         return 0
     else:
