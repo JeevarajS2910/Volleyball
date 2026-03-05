@@ -82,14 +82,20 @@ def check_gpu(logger):
 
 
 def validate_paths(logger):
-    """Make sure model weights and data.yaml exist."""
+    """Make sure data.yaml exists. Model will be auto-downloaded if missing."""
     ok = True
-    if not os.path.isfile(MODEL_PATH):
-        logger.info(f"❌ Model not found: {MODEL_PATH}")
-        ok = False
     if not os.path.isfile(DATA_YAML):
         logger.info(f"❌ Dataset config not found: {DATA_YAML}")
         ok = False
+    else:
+        logger.info(f"✅ Dataset config found: {DATA_YAML}")
+    
+    # Model will be auto-downloaded by ultralytics if not found
+    if os.path.isfile(MODEL_PATH):
+        logger.info(f"✅ Model found locally: {MODEL_PATH}")
+    else:
+        logger.info(f"⚠️ Model not found locally, will be auto-downloaded: {MODEL_PATH}")
+    
     return ok
 
 
