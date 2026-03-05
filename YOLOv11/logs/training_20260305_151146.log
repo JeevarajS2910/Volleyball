@@ -1,0 +1,5 @@
+2026-03-05 15:11:46 | Log file → /teamspace/studios/this_studio/Volleyball/YOLOv11/logs/training_20260305_151146.log
+2026-03-05 15:11:46 | ✅ GPU detected: Tesla T4  (14.7 GB VRAM)
+2026-03-05 15:11:46 | ❌ Model not found: /teamspace/studios/this_studio/Volleyball/yolo11n.pt
+2026-03-05 15:11:46 | 
+📝 Full training log saved to: /teamspace/studios/this_studio/Volleyball/YOLOv11/logs/training_20260305_151146.log
