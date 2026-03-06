@@ -17,3 +17,33 @@
 2026-03-05 16:48:49 | Loading model …
 2026-03-05 16:48:49 | Starting training …
 
+2026-03-05 19:01:58 | 
+============================================================
+2026-03-05 19:01:58 |   TRAINING COMPLETE — FINAL METRICS
+2026-03-05 19:01:58 | ============================================================
+2026-03-05 19:01:58 | 
+Metric                                   Value
+2026-03-05 19:01:58 | -----------------------------------------------
+2026-03-05 19:01:58 | metrics/precision(B)                    0.5634
+2026-03-05 19:01:58 | metrics/recall(B)                       0.4801
+2026-03-05 19:01:58 | metrics/mAP50(B)                        0.5866
+2026-03-05 19:01:58 | metrics/mAP50-95(B)                     0.4298
+2026-03-05 19:01:58 | fitness                                 0.4298
+2026-03-05 19:01:58 | 
+📁 Results saved to : /teamspace/studios/this_studio/Volleyball/YOLOv26/runs/volleyball_train
+2026-03-05 19:01:58 | 📊 Auto-saved charts:
+2026-03-05 19:01:58 |    ✅ results.png
+2026-03-05 19:01:58 |    ✅ confusion_matrix.png
+2026-03-05 19:01:58 |    ✅ confusion_matrix_normalized.png
+2026-03-05 19:01:58 |    — F1_curve.png
+2026-03-05 19:01:58 |    — P_curve.png
+2026-03-05 19:01:58 |    — R_curve.png
+2026-03-05 19:01:58 |    — PR_curve.png
+2026-03-05 19:01:58 |    ✅ labels.jpg
+2026-03-05 19:01:58 |    — labels_correlogram.jpg
+2026-03-05 19:01:58 | 
+🏆 Best weights : /teamspace/studios/this_studio/Volleyball/YOLOv26/runs/volleyball_train/weights/best.pt
+2026-03-05 19:01:58 |    Last weights : /teamspace/studios/this_studio/Volleyball/YOLOv26/runs/volleyball_train/weights/last.pt
+2026-03-05 19:01:58 | ============================================================
+2026-03-05 19:01:58 | 
+📝 Full training log saved to: /teamspace/studios/this_studio/Volleyball/YOLOv26/logs/training_20260305_164849.log
