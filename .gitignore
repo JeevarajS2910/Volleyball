@@ -1,1 +1,3 @@
-venv_gpu/
+venv_gpu/runs/
+dataset/*.mp4
+*.mp4
