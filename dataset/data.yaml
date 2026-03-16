@@ -1,5 +1,5 @@
 # YOLOv8 Dataset Configuration - Volleyball Detection
-path: /teamspace/studios/this_studio/Volleyball/dataset
+path: c:\volley ball\dataset
 train: images/train
 val: images/val
 
@@ -8,3 +8,5 @@ names:
   0: volleyball
   1: player_team1
   2: player_team2
+  3: audience
+  4: referee
