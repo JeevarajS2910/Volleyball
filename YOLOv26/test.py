@@ -8,7 +8,7 @@ CURRENT_FILE_PATH = os.path.abspath(__file__)
 SCRIPT_DIR = os.path.dirname(CURRENT_FILE_PATH)
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
 
-# Path to the trained YOLOv26 model for YOLOv26 training runs
+# Path to the trained YOLOv26 model weights
 MODEL_PATH = os.path.join(SCRIPT_DIR, "runs", "volleyball_train", "weights", "best.pt")
 
 # Path to the dataset configuration file
