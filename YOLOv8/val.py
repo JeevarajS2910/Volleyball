@@ -8,50 +8,31 @@ CURRENT_FILE_PATH = os.path.abspath(__file__)
 SCRIPT_DIR = os.path.dirname(CURRENT_FILE_PATH)
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
 
-# Path to the trained YOLOv8 model weights
+# Path to the trained YOLOv7 model weights
 MODEL_PATH = os.path.join(SCRIPT_DIR, "runs", "volleyball_train", "weights", "best.pt")
 
 # Path to the dataset configuration file (shared)
 DATA_YAML_PATH = os.path.join(BASE_DIR, "dataset", "data.yaml")
 # ───────────────────────────────────────────────────────────────────
 
-
-def get_mean_precision_recall(metrics_box):
-    """Safely extract mean Precision and Recall from a metrics.box object."""
-    try:
-        if hasattr(metrics_box, "mp") and hasattr(metrics_box, "mr"):
-            return float(metrics_box.mp), float(metrics_box.mr)
-        if hasattr(metrics_box, "mean_results"):
-            res = metrics_box.mean_results()
-            return float(res[0]), float(res[1])
-        p_arr = metrics_box.p
-        r_arr = metrics_box.r
-        p = float(sum(p_arr) / len(p_arr)) if len(p_arr) > 0 else 0.0
-        r = float(sum(r_arr) / len(r_arr)) if len(r_arr) > 0 else 0.0
-        return p, r
-    except Exception:
-        return 0.0, 0.0
-
-
 def main():
-    print(f"✅ Loading YOLOv8 model from: {MODEL_PATH}")
+    print(f"✅ Loading YOLOv7 model from: {MODEL_PATH}")
     if not os.path.exists(MODEL_PATH):
         print(f"❌ Error: Model weights not found at {MODEL_PATH}")
-        print("   Please train the YOLOv8 model first using train.py")
         sys.exit(1)
 
     if not os.path.exists(DATA_YAML_PATH):
         print(f"❌ Error: Dataset configuration not found at {DATA_YAML_PATH}")
         sys.exit(1)
 
-    # Initialize YOLOv8 Model
+    # Initialize YOLO Model
     model = YOLO(MODEL_PATH)
-
+    
     val_project_dir = os.path.join(SCRIPT_DIR, "runs", "val")
     val_name = "volleyball_val"
 
-    print(f"🚀 Starting Validation for YOLOv8 on dataset: {DATA_YAML_PATH}")
-
+    print(f"🚀 Starting Validation for YOLOv7 on dataset: {DATA_YAML_PATH}")
+    
     # Run validation
     metrics = model.val(
         data=DATA_YAML_PATH,     # dataset configuration
@@ -63,30 +44,38 @@ def main():
         plots=True,              # Generate PR curves, F1 curves, confusion matrix, etc.
         verbose=True             # Print detailed stats per class
     )
-
-    # Retrieve mAP metrics
+    
+    # Retrieve metrics
     try:
-        map50 = float(metrics.box.map50)
-        map95 = float(metrics.box.map)
+        map50 = metrics.box.map50
+        map95 = metrics.box.map
     except Exception:
-        map50, map95 = 0.0, 0.0
+        map50, map95 = 0, 0
+    
+    try:
+        if hasattr(metrics.box, 'mean_results'):
+            p = metrics.box.mean_results()[0]
+            r = metrics.box.mean_results()[1]
+        elif hasattr(metrics.box, 'mp') and hasattr(metrics.box, 'mr'):
+            p = metrics.box.mp
+            r = metrics.box.mr
+        else:
+            p = sum(metrics.box.p) / len(metrics.box.p) if len(metrics.box.p) > 0 else 0
+            r = sum(metrics.box.r) / len(metrics.box.r) if len(metrics.box.r) > 0 else 0
+    except Exception:
+        p, r = 0, 0
 
-    # Retrieve Precision & Recall
-    p, r = get_mean_precision_recall(metrics.box)
-
-    # ── Results summary ──────────────────────────────────────────────
-    print("\n" + "━" * 50)
-    print("📈 YOLOv8 VALIDATION METRICS OVERVIEW")
-    print("━" * 50)
+    print("\n" + "━"*50)
+    print("📈 YOLOv7 VALIDATION METRICS OVERVIEW")
+    print("━"*50)
     print(f"Precision:   {p:.4f}")
     print(f"Recall:      {r:.4f}")
     print(f"mAP@50:      {map50:.4f}")
     print(f"mAP@50-95:   {map95:.4f}")
-    print("━" * 50)
+    print("━"*50)
     print(f"📂 Detailed validation results are saved in: ")
     print(f"   {os.path.join(val_project_dir, val_name)}")
-    print("━" * 50)
-
+    print("━"*50)
 
 if __name__ == "__main__":
     main()

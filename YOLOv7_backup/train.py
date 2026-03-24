@@ -1,7 +1,7 @@
 """
-YOLOv7-Based Training (Using YOLOv8 Backend) — GPU Training with Auto-Logging & Auto-Save
-========================================================================================
-• Trains YOLOv8 on the volleyball dataset using GPU (YOLOv7 is deprecated in ultralytics)
+YOLOv8 Volleyball Detection — GPU Training with Auto-Logging & Auto-Save
+=========================================================================
+• Trains YOLOv8 on the volleyball dataset using GPU
 • Saves full training log to a timestamped .log file
 • Auto-saves checkpoints every 10 epochs + best/last weights
 • Auto-saves all result charts (P/R curves, confusion matrix, etc.)
@@ -11,9 +11,6 @@ Classes:
   0: volleyball
   1: player_team1
   2: player_team2
-
-Note: YOLOv7 was deprecated in favor of YOLOv8. This script uses YOLOv8 with similar
-      training parameters for compatibility.
 """
 
 import os
@@ -26,12 +23,12 @@ from ultralytics import YOLO
 
 
 # ────────────────────────── CONFIGURATION ──────────────────────────
-# Detect project root dynamically (parent of YOLOv7 directory)
+# Detect project root dynamically (parent of YOLOv8 directory)
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 SCRIPT_DIR        = os.path.dirname(CURRENT_FILE_PATH)
 BASE_DIR          = os.path.dirname(SCRIPT_DIR)
 
-MODEL_PATH        = "yolov8n"  # Using YOLOv8 (YOLOv7 is deprecated)
+MODEL_PATH        = os.path.join(BASE_DIR, "yolo26n.pt")
 DATA_YAML         = os.path.join(BASE_DIR, "dataset", "data.yaml")
 
 EPOCHS            = 100
@@ -93,8 +90,11 @@ def validate_paths(logger):
     else:
         logger.info(f"✅ Dataset config found: {DATA_YAML}")
     
-    # Model will be auto-downloaded by ultralytics
-    logger.info(f"ℹ️ Model: {MODEL_PATH} (YOLOv8 - YOLOv7 is deprecated, will auto-download)")
+    # Model will be auto-downloaded by ultralytics if not found
+    if os.path.isfile(MODEL_PATH):
+        logger.info(f"✅ Model found locally: {MODEL_PATH}")
+    else:
+        logger.info(f"⚠️ Model not found locally, will be auto-downloaded: {MODEL_PATH}")
     
     return ok
 

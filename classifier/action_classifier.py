@@ -20,6 +20,7 @@ class PlayerState(Enum):
     BLOCKING = "blocking"
     SETTING = "setting"
     RECEIVING = "receiving"
+    SPIKE = "spike"
     UNKNOWN = "unknown"
 
 
@@ -195,11 +196,12 @@ class ActionClassifier:
                          velocity: Tuple[float, float]) -> PlayerState:
         """Determine player state from measurements."""
         vx, vy = velocity
+        state = PlayerState.STANDING
         
         # Check for diving (body nearly horizontal)
         if 'body_angle' in measurements:
             if measurements['body_angle'] > self.dive_angle_threshold:
-                return PlayerState.DIVING
+                state = PlayerState.DIVING
         
         # Check for jumping (both arms raised high and upward velocity)
         left_arm_raised = measurements.get('left_arm_raised', 0)
@@ -211,34 +213,39 @@ class ActionClassifier:
         is_moving_up = vy < -5
         
         if both_arms_raised and is_moving_up:
-            return PlayerState.JUMPING
+            state = PlayerState.JUMPING
         
         # Check for blocking (arms raised, near net position)
         if both_arms_raised and abs(vy) < 3:
-            return PlayerState.BLOCKING
+            state = PlayerState.BLOCKING
         
         # Check for attacking (one arm raised high, jumping)
         one_arm_very_high = (left_arm_raised > 0.4 or right_arm_raised > 0.4)
         if one_arm_very_high and is_moving_up:
-            return PlayerState.ATTACKING
+            state = PlayerState.ATTACKING
         
         # Check for serving (one arm raised, relatively stationary)
         if one_arm_very_high and abs(vx) < 3 and abs(vy) < 3:
-            return PlayerState.SERVING
+            state = PlayerState.SERVING
         
         # Check for setting (arms raised at medium height)
         arms_medium = (0.15 < left_arm_raised < 0.35 and 
                       0.15 < right_arm_raised < 0.35)
         if arms_medium:
-            return PlayerState.SETTING
+            state = PlayerState.SETTING
         
         # Check for receiving (low stance, arms together)
         if 'left_knee_angle' in measurements and 'right_knee_angle' in measurements:
             avg_knee_angle = (measurements['left_knee_angle'] + 
                             measurements['right_knee_angle']) / 2
             if avg_knee_angle < 150:  # Bent knees
-                return PlayerState.RECEIVING
+                state = PlayerState.RECEIVING
         
+        # Check for spike (Attacking + Jumping)
+        if (state == PlayerState.ATTACKING or state == PlayerState.JUMPING) and both_arms_raised:
+             # Further logic can be added here to check ball proximity
+             return PlayerState.SPIKE
+
         # Check for running
         if abs(vx) > 10:
             return PlayerState.RUNNING
@@ -247,7 +254,7 @@ class ActionClassifier:
         if abs(vx) > 3:
             return PlayerState.WALKING
         
-        return PlayerState.STANDING
+        return state # Return the state determined by determine_state
     
     def _smooth_state(self, track_id: int, current_state: PlayerState) -> PlayerState:
         """Apply temporal smoothing to reduce flickering."""
@@ -283,6 +290,7 @@ class ActionClassifier:
             PlayerState.BLOCKING: (255, 0, 0),        # Blue
             PlayerState.SETTING: (255, 255, 255),     # White
             PlayerState.RECEIVING: (0, 128, 255),     # Orange-ish
+            PlayerState.SPIKE: (0, 0, 200),           # Dark Red
             PlayerState.UNKNOWN: (100, 100, 100)      # Dark gray
         }
         return colors.get(state, (100, 100, 100))

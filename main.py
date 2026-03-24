@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 from tracker.yolo_tracker import YOLOTracker
+import numpy as np
 from classifier.action_classifier import ActionClassifier, PlayerState
 from utils.visualization import Visualizer
 
@@ -20,7 +21,8 @@ def process_video(
     detection_model: str = "runs/detect/volleyball_v2/weights/best.pt",
     pose_model: str = "yolo26n.pt",
     show_preview: bool = True,
-    conf_threshold: float = 0.3
+    conf_threshold: float = 0.3,
+    frame_skip: int = 1
 ) -> None:
     """
     Process a video file or webcam stream.
@@ -97,6 +99,8 @@ def process_video(
                 break
 
             frame_count += 1
+            if frame_skip > 1 and frame_count % frame_skip != 0:
+                continue
 
             # Run detection and tracking
             results = tracker.detect_and_track(frame)
@@ -119,6 +123,22 @@ def process_video(
                 states[track_id] = state.value
                 state_colors[track_id] = classifier.get_state_color(state)
 
+                # Estimate serve speed if a serve/spike is detected
+                if state in (PlayerState.SERVING, PlayerState.SPIKE) and results.get('ball'):
+                    # Use dynamic scale from court tracking if available
+                    pixel_to_meter = tracker.pixel_to_meter if tracker.pixel_to_meter > 0 else (18.0 / 800.0)
+                    ball_vel = tracker.calculate_velocity(results['ball']['track_id'])
+                    speed_mps = np.sqrt(ball_vel[0]**2 + ball_vel[1]**2) * fps * pixel_to_meter
+                    tracker.serve_speed = min(speed_mps * 3.6, 150.0) # Cap at realistic max
+
+            # Prepare rally info
+            rally_info = {
+                'active': tracker.rally_active,
+                'touches': len(tracker.current_touches),
+                'serve_speed': tracker.serve_speed,
+                'participation': tracker.player_participation
+            }
+
             # Draw visualizations
             annotated_frame = visualizer.draw_frame(
                 frame=frame,
@@ -126,7 +146,9 @@ def process_video(
                 track_history=tracker.track_history,
                 states=states,
                 state_colors=state_colors,
-                ball_history=tracker.get_ball_history()
+                ball_history=tracker.get_ball_history(),
+                rally_info=rally_info,
+                touch_coords=tracker.touch_coords
             )
 
             # Show progress
@@ -190,7 +212,11 @@ def main():
         "--conf", type=float, default=0.3,
         help="Confidence threshold (default: 0.3)"
     )
-
+    parser.add_argument(
+        "--skip", type=int, default=1,
+        help="Process every Nth frame (default: 1)"
+    )
+    
     args = parser.parse_args()
 
     process_video(
@@ -199,7 +225,8 @@ def main():
         detection_model=args.model,
         pose_model=args.pose_model,
         show_preview=not args.no_preview,
-        conf_threshold=args.conf
+        conf_threshold=args.conf,
+        frame_skip=args.skip
     )
 
 

@@ -1,1 +1,6 @@
 venv_gpu/runs/
+__pycache__/
+pip_cache/
+*.mp4
+*.pt
+YOLOv8/runs/

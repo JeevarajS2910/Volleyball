@@ -1,5 +1,3 @@
-import cv2
-import math
 import os
 import sys
 from ultralytics import YOLO
@@ -10,119 +8,80 @@ CURRENT_FILE_PATH = os.path.abspath(__file__)
 SCRIPT_DIR = os.path.dirname(CURRENT_FILE_PATH)
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
 
-# Path to the trained YOLOv8 model weights
+# Path to the trained YOLOv8 model
 MODEL_PATH = os.path.join(SCRIPT_DIR, "runs", "volleyball_train", "weights", "best.pt")
 
-# Path to the input video
-VIDEO_PATH = os.path.join(BASE_DIR, "dataset", "videoplayback.1770659521545.publer.com.mp4")
-
-# Output video path
-OUTPUT_VIDEO_PATH = os.path.join(SCRIPT_DIR, "runs", "inference_output.mp4")
-
-# Heuristic thresholds for action recognition
-ACTION_DISTANCE_THRESHOLD = 150  
+# Path to the dataset configuration file
+DATA_YAML_PATH = os.path.join(BASE_DIR, "dataset", "data.yaml")
 # ───────────────────────────────────────────────────────────────────
 
-def calculate_distance(box1, box2):
-    c1_x = (box1[0] + box1[2]) / 2
-    c1_y = (box1[1] + box1[3]) / 2
-    c2_x = (box2[0] + box2[2]) / 2
-    c2_y = (box2[1] + box2[3]) / 2
-    return math.sqrt((c1_x - c2_x)**2 + (c1_y - c2_y)**2)
-
-def recognize_action(player_box, ball_box, previous_ball_y):
-    if ball_box is None:
-        return "standing"
-    
-    dist = calculate_distance(player_box, ball_box)
-    
-    if dist < ACTION_DISTANCE_THRESHOLD:
-        ball_center_y = (ball_box[1] + ball_box[3]) / 2
-        if previous_ball_y is not None and ball_center_y < previous_ball_y:
-            return "shooting / hitting"
-        else:
-            return "receiving"
-            
-    return "standing"
-
-def run_inference():
+def main():
+    print(f"✅ Loading model from: {MODEL_PATH}")
     if not os.path.exists(MODEL_PATH):
-        print(f"❌ Model not found at: {MODEL_PATH}")
+        print(f"❌ Error: Model weights not found at {MODEL_PATH}")
         sys.exit(1)
 
-    if not os.path.exists(VIDEO_PATH):
-        print(f"❌ Video not found at: {VIDEO_PATH}")
+    if not os.path.exists(DATA_YAML_PATH):
+        print(f"❌ Error: Dataset configuration not found at {DATA_YAML_PATH}")
         sys.exit(1)
 
-    print(f"✅ Loading model from {MODEL_PATH}")
+    # Initialize YOLO Model
     model = YOLO(MODEL_PATH)
-
-    print(f"✅ Opening video {VIDEO_PATH}")
-    cap = cv2.VideoCapture(VIDEO_PATH)
     
-    if not cap.isOpened():
-        print("❌ Error opening video file.")
-        sys.exit(1)
-
-    width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps    = int(cap.get(cv2.CAP_PROP_FPS))
+    # Optional: If you want to run inference on a specific directory of images and save predictions
+    # you can use model.predict(source="path/to/images", save=True)
+    # However, to compute mAP, Precision, and Recall, we use the validation mode on an annotated dataset.
     
-    os.makedirs(os.path.dirname(OUTPUT_VIDEO_PATH), exist_ok=True)
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc, fps, (width, height))
+    val_project_dir = os.path.join(SCRIPT_DIR, "runs", "val")
+    val_name = "volleyball_test"
 
-    print(f"🎬 Processing video. Output will be saved to {OUTPUT_VIDEO_PATH}")
+    print(f"🚀 Starting validation (testing) and metrics calculation on dataset: {DATA_YAML_PATH}")
+    # Evaluate the model on the validation set
+    metrics = model.val(
+        data=DATA_YAML_PATH,     # dataset configuration
+        project=val_project_dir, # directory to save results
+        name=val_name,           # specific experiment name
+        save_json=True,          # Save COCO format JSON results
+        save_txt=True,           # Save prediction texts
+        save_conf=True,          # Save confidences in prediction texts
+        plots=True,              # Generate PR curves, F1 curves, confusion matrix, etc.
+        verbose=True             # Print detailed stats per class
+    )
     
-    frame_count = 0
-    previous_ball_y = None
+    # Retrieve metrics (Ultralytics v8 dynamic attributes)
+    map50 = metrics.box.map50
+    map95 = metrics.box.map
+    
+    # By default, metrics.box.p and metrics.box.r are arrays mapping to each class.
+    # We can get the mean values if available:
+    try:
+        if hasattr(metrics.box, 'mean_results'):
+            # internal structure can sometimes have mean_results (precision, recall, mAP50, mAP50-95)
+            # Typically 0: p, 1: r, 2: mAP50, 3: mAP
+            p = metrics.box.mean_results()[0]
+            r = metrics.box.mean_results()[1]
+        elif hasattr(metrics.box, 'mp') and hasattr(metrics.box, 'mr'):
+            # Using specific mean precision/recall properties
+            p = metrics.box.mp
+            r = metrics.box.mr
+        else:
+            p = sum(metrics.box.p) / len(metrics.box.p) if len(metrics.box.p) > 0 else 0
+            r = sum(metrics.box.r) / len(metrics.box.r) if len(metrics.box.r) > 0 else 0
+    except Exception:
+        p = 0
+        r = 0
 
-    while cap.isOpened():
-        success, frame = cap.read()
-        if not success:
-            break
-            
-        frame_count += 1
-        
-        # We disable tracking internally using plain model(frame) to prevent missing lapx requirement.
-        results = model(frame, verbose=False)
-        
-        if len(results) > 0:
-            result = results[0]
-            boxes = result.boxes
-            
-            ball_box = None
-            player_boxes = []
-            
-            for box in boxes:
-                cls_id = int(box.cls[0].item())
-                if cls_id == 0:
-                    ball_box = box.xyxy[0].cpu().numpy()
-                elif cls_id in [1, 2]:
-                    player_boxes.append((box.xyxy[0].cpu().numpy(), cls_id))
-            
-            for (p_box, cls_id) in player_boxes:
-                color = (255, 0, 0) if cls_id == 1 else (0, 0, 255) 
-                action = recognize_action(p_box, ball_box, previous_ball_y)
-                x1, y1, x2, y2 = map(int, p_box)
-                cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
-                label = f"Player {cls_id}: {action}"
-                cv2.putText(frame, label, (x1, max(y1 - 10, 0)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-                
-            if ball_box is not None:
-                x1, y1, x2, y2 = map(int, ball_box)
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame, "Volleyball", (x1, max(y1 - 10, 0)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-                previous_ball_y = (y1 + y2) / 2
-                
-        out.write(frame)
-        if frame_count % 30 == 0:
-            print(f"Processed {frame_count} frames...")
-
-    cap.release()
-    out.release()
-    print("✅ Video processing complete.")
-    print(f"📂 Output saved to: {OUTPUT_VIDEO_PATH}")
+    print("\n" + "━"*50)
+    print("📈 VALIDATION METRICS OVERVIEW")
+    print("━"*50)
+    print(f"Precision:   {p:.4f}")
+    print(f"Recall:      {r:.4f}")
+    print(f"mAP@50:      {map50:.4f}")
+    print(f"mAP@50-95:   {map95:.4f}")
+    print("━"*50)
+    print(f"📂 Detailed test results, images, matrices, and PR curves are saved in: ")
+    print(f"   {os.path.join(val_project_dir, val_name)}")
+    print("━"*50)
 
 if __name__ == "__main__":
-    run_inference()
+    main()
