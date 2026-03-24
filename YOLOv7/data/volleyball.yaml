@@ -1,0 +1,9 @@
+# YOLOv7 Dataset Configuration - Volleyball Detection
+train: c:/volley ball/dataset/images/train
+val: c:/volley ball/dataset/images/val
+
+# number of classes
+nc: 5
+
+# class names
+names: ['volleyball', 'player_team1', 'player_team2', 'audience', 'referee']
