@@ -25,10 +25,13 @@ def attempt_download(file, repo='WongKinYiu/yolov7'):
             response = requests.get(f'https://api.github.com/repos/{repo}/releases/latest').json()  # github api
             assets = [x['name'] for x in response['assets']]  # release assets
             tag = response['tag_name']  # i.e. 'v1.0'
-        except:  # fallback plan
+        except Exception:  # fallback plan
             assets = ['yolov7.pt', 'yolov7-tiny.pt', 'yolov7x.pt', 'yolov7-d6.pt', 'yolov7-e6.pt', 
                       'yolov7-e6e.pt', 'yolov7-w6.pt']
-            tag = subprocess.check_output('git tag', shell=True).decode().split()[-1]
+            try:
+                tag = subprocess.check_output('git tag', shell=True, stderr=subprocess.STDOUT).decode().split()[-1]
+            except Exception:
+                tag = 'v0.1'  # YOLOv7 default release tag
 
         name = file.name
         if name in assets:
