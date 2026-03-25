@@ -1,6 +1,11 @@
 # YOLOv7 Dataset Configuration - Volleyball Detection
+<<<<<<< HEAD
 train: c:/volley ball/dataset/images/train
 val: c:/volley ball/dataset/images/val
+=======
+train: ../dataset/images/train
+val: ../dataset/images/val
+>>>>>>> 1c33ae8cf22fa31c0265e313e41b5627b5a40d84
 
 # number of classes
 nc: 5
